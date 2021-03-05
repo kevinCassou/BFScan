@@ -177,7 +177,7 @@ Main(
     interpolation_order = 2,
     number_of_AM        = 1, # number of azimuthal modes included (for LWFA the minimum is 2: mode 0 for wakefield, mode 1 for the laser, see documentation)
     timestep            = dt,
-    simulation_time     = 21000, 
+    simulation_time     = 31000, 
 
     cell_length         = [ dx,  dtrans],
     grid_length         = [ Lx,  Ltrans],
@@ -375,7 +375,7 @@ Z_r                  = pi*w_0**2/lambda_0     # m
 # position of the focal spot in vacuum in lambda0/(2pi) unit
 # pp[0,5] is the xbegindownramp position 
 
-xfocus               = pp[0,5] + config_external['x_foc']*Z_r/onel    # lambda0/(2pi) unit
+xfocus               = pp[0,5]/onel + config_external['x_foc']*Z_r/onel    # lambda0/(2pi) unit
 
 
 LaserEnvelopeGaussianAM( 
