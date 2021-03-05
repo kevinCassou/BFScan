@@ -7,6 +7,20 @@ from sklearn.model_selection import ParameterGrid
 import pandas as pd
 import numpy as np
 
+
+#### function offset taking into account self focusing shift difference when changing ne1,L1
+
+def xoffset(ne1,L1):
+    """
+    polynomial law estimated from a scan of self focusing as a fonction of ne1, and xoff to have a_0>1.8 at the end of region 1
+    ne1 :cm^-3
+    l1  :m
+    """
+    olx = [-2.99025772e-66,  2.43473830e-44,  1.30273333e-22, -3.77631065e-01]
+    xoff = np.poly1d(polx)
+    return xoff(ne1*L1)
+
+
 ### 0 - Define path and executables
 
 # The input namelist - Remember, this namelist must NOT contain the parameters clrw and tasks_on_projection in Main block
@@ -14,17 +28,13 @@ name_input_namelist = "LWFA_ii-env-bfs.py"
 name_submission_script = "runSmilei_ii-env-bfs.sh"
 #name_input_namelist = "tst3d_laser_wakefield.py"
 
-print("step0")
-
 # necessary paths - they must be absolute paths
 starting_directory = os.getcwd()
 path_input_namelist = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/"+name_input_namelist
 path_input_submission_script = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/"+name_submission_script
 
-path_executable_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/"
-path_executable_test_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/"
-
-print("STEP1", path_executable_test_develop)
+path_executable_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/smilei"
+path_executable_test_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/smilei_test"
 
 # save content of input namelist
 with open(path_input_namelist, "r") as file:
@@ -33,26 +43,24 @@ with open(path_input_namelist, "r") as file:
 with open(path_input_submission_script, "r") as file:
 	submission_script_file_content = file.readlines()
 
-print("STEP2")
 ### 1 - Prepare dataframe with scan parameters
 
-n_e_1 = 1.0e18*np.array([3.0,4.5,6.0])
-n_e_2 = 1.0e18*np.array([1.5 , 4])
+n_e_1 = 1.0e19*np.array([3.0,4.0,6.0])
+n_e_2 = 1.0e19*np.array([1.5 , 4])
 l_1 =  1e-3*np.array([0.3, 0.6, 1.2])
-x_foc = np.array([0.1, 0.2, 0.3])
+x_foc = np.array([0.0, 0.2, 0.4])
 c_N2 =  1e-2*np.array([0.3, 1, 3])
-
 
 param_grid = {'n_e_1':n_e_1, 'n_e_2':n_e_2, 'l_1':l_1,'x_foc':x_foc,'c_N2':c_N2 }
 
 df = pd.DataFrame((ParameterGrid(param_grid)))
 
-print("stop")
 #add column Config
 df['Config'] = df.index
 #rearrange columns cols = list(df.columns.values)
 df = df[['Config','n_e_1', 'n_e_2', 'l_1', 'x_foc', 'c_N2' ]]
 
+df['x_foc'] =  df['x_foc'].values + xoffset(df['n_e_1'].values,df['l_1'].values)
 
 ### 2 - create folders and submit job one by one
 
@@ -89,7 +97,7 @@ for index, row in df.iterrows():
             submission_script_file.write(line)
     
 	# launch the simulation
-	# os.system("sbatch submission_script.sh")
+    os.system("ccc_mssub submission_script.sh")
 
 	# go back to the original folder
     os.chdir(starting_directory)

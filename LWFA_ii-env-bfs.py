@@ -22,17 +22,21 @@ def plasmaProfile(ne1, L1, ne2, Lx, laser_fwhm, print_flag= False, plot_flag = F
     """
     # conversion mm2m
     mm2m = 1e-3
-    
+    # polygonal characteristics point 
+    x0 = 0.0
     xupramp1 = Lx+1.2*laser_fwhm # starting point
     lupramp1 = 1.e-3  # first up ramp  
     xupramp2 = xupramp1+lupramp1
     lupramp2 = 0.7e-3  #second upramp length of the input diameter l2,d2
     xupramp3 = xupramp2+lupramp2
-    lupramp3 = 0.3e-3   #thrid upramp  
+    lupramp3 = 0.3e-3   #third upramp
+    # plateau region #  
     xplateau1 = xupramp3 + lupramp3
-    lplateau1 = 0.85e-3
+    lplateau1 = 0.85*L1                 #region 1 plateau length 
+    # downramp#
     xbegindownramp1 = xplateau1+lplateau1
     ldownramp1 = 0.35e-3
+    # plateau region 2 with correction due to non null flow 1->2
     xplateau2 = xbegindownramp1 + ldownramp1
     lplateau2 = 0.8*ldownramp1
     xbegindownramp2 = xplateau2 + lplateau2
@@ -45,24 +49,24 @@ def plasmaProfile(ne1, L1, ne2, Lx, laser_fwhm, print_flag= False, plot_flag = F
     ne_up1 = 0.5*ne1
     ne_up2 = 0.75*ne1
     r = ne2/ne1
-    l1 = [ 0.60708368, -0.52921582, -0.29939209,  0.60611454]
+    l1 = [ 0.52644434 -0.60966651 -0.1897902   0.58150618]
     x1 = np.poly1d(l1)
-    l2 = [ 0.86111787, -0.69143663, -0.41828169,  0.77436027]
+    l2 = [ 0.84934688 -0.82402032 -0.30158281  0.75062812]
     x2 = np.poly1d(l2)
-    l3 = [ 0.080351  , -0.12722241,  0.18361121,  0.60995613]
+    l3 = [ 0.26187251 -0.21280877  0.15913015  0.62090305]
     x3 = np.poly1d(l3)
     x4 = 0.72
     x5 = 1.49
     
-    k1 = [-7.64947689e+18,  5.05567175e+18,  6.36416413e+18,  8.01846117e+16]
+    k1 = [-5.91588353e+24,  5.45382530e+24,  5.11741745e+24,  3.87320393e+23]
     y1 = np.poly1d(k1)
-    k2 = [-5.17550459e+18,  3.73054893e+18,  4.96272554e+18,  8.22938073e+17]
+    k2 = [-2.67412997e+24,  3.65119495e+24,  3.70868391e+24,  1.15712555e+24]
     y2 = np.poly1d(k2)
-    k3 = [-4.65863584e+18,  3.44017341e+18,  4.63191329e+18,  9.26329480e+17]
+    k3 = [-2.06670632e+24,  3.28005947e+24,  3.39737877e+24,  1.25963404e+24]
     y3 = np.poly1d(k3)
-    k4 = [-4.74272589e+18,  3.57331599e+18,  4.68534201e+18,  7.66840736e+17]
+    k4 = [-2.02897508e+24,  3.40346262e+24,  3.39462911e+24,  1.11544168e+24]
     y4 = np.poly1d(k4)
-    k5 = [-6.19788595e+18,  4.38931942e+18,  5.43334029e+18,  1.20735744e+17]
+    k5 = [-3.97425183e+24,  4.52137775e+24,  4.14970701e+24,  4.51583537e+23]
     y5 = np.poly1d(k5)
     
     xr = np.array([x0,xupramp1,xupramp2,xupramp3,xplateau1,xbegindownramp1,
@@ -88,9 +92,9 @@ def plasmaProfile(ne1, L1, ne2, Lx, laser_fwhm, print_flag= False, plot_flag = F
         ax.set_ylabel('ne (x)')
     
     if print_flag == True:
-        print("###########################################################\n"
-        ,xr,
-        ,ner,
+        print("###########################################################\n",
+        xr,
+        ner,
         "\n ###########################################################")
 
     return np.vstack((xr,ner))
@@ -126,25 +130,14 @@ def dopantProfile(C_N2,ne1,ne2,xr,ner):
         ax.set_ylabel('ne (x)')
     
     if print_flag == True:
-        print("###########################################################\n"
-        ,xN2,
-        ,nN2,
+        print("###########################################################\n",
+        xN2,
+        nN2,
         "\n ###########################################################")
 
     return np.vstack((xN2,nN2))
 
 ## vacuum focus offset as a factor of Zr 
-
-def xoffset(ne1,L1): 
-    """  
-    polynomial law estimated from a scan of self focusing as a fonction of ne1, and xoff to have a_0>1.8 at the end of region 1
-    ne1 :cm^-3
-    l1  :m 
-    """
-    polx = [-2.99025772e-48,  2.43473830e-32,  1.30273333e-16, -3.77631065e-01]
-    xoff = np.poly1d(polx)
-    return xoff(ne1*L1)
-
 
 # laser wavelength (Ti-Sa)
 lambda_0  = 0.8e-6                # [m] IMPORTANT: this value is used for conversions
@@ -380,8 +373,9 @@ Species(
 w_0                  = 18.0e-6                 # m 
 Z_r                  = pi*w_0**2/lambda_0     # m 
 # position of the focal spot in vacuum in lambda0/(2pi) unit
+# pp[0,5] is the xbegindownramp position 
 
-xfocus               = xoffset(config_external['n_e_1'],config_external['l_1'])*Z_r/onel    # lambda0/(2pi) unit
+xfocus               = pp[0,5] + config_external['x_foc']*Z_r/onel    # lambda0/(2pi) unit
 
 
 LaserEnvelopeGaussianAM( 
