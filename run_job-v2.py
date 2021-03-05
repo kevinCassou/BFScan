@@ -16,7 +16,7 @@ def xoffset(ne1,L1):
     ne1 :cm^-3
     l1  :m
     """
-    olx = [-2.99025772e-66,  2.43473830e-44,  1.30273333e-22, -3.77631065e-01]
+    polx = [-2.99025772e-66,  2.43473830e-44,  1.30273333e-22, -3.77631065e-01]
     xoff = np.poly1d(polx)
     return xoff(ne1*L1)
 
@@ -45,8 +45,8 @@ with open(path_input_submission_script, "r") as file:
 
 ### 1 - Prepare dataframe with scan parameters
 
-n_e_1 = 1.0e19*np.array([3.0,4.0,6.0])
-n_e_2 = 1.0e19*np.array([1.5 , 4])
+n_e_1 = 1.0e24*np.array([3.0,4.0,6.0])
+n_e_2 = 1.0e24*np.array([1.5 , 4])
 l_1 =  1e-3*np.array([0.3, 0.6, 1.2])
 x_foc = np.array([0.0, 0.2, 0.4])
 c_N2 =  1e-2*np.array([0.3, 1, 3])
@@ -97,7 +97,7 @@ for index, row in df.iterrows():
             submission_script_file.write(line)
     
 	# launch the simulation
-    os.system("ccc_mssub submission_script.sh")
+    os.system("ccc_msub submission_script.sh")
 
 	# go back to the original folder
     os.chdir(starting_directory)

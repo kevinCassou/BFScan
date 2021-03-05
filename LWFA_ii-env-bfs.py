@@ -49,11 +49,11 @@ def plasmaProfile(ne1, L1, ne2, Lx, laser_fwhm, print_flag= False, plot_flag = F
     ne_up1 = 0.5*ne1
     ne_up2 = 0.75*ne1
     r = ne2/ne1
-    l1 = [ 0.52644434 -0.60966651 -0.1897902   0.58150618]
+    l1 = [ 0.52644434, -0.60966651, -0.1897902,   0.58150618]
     x1 = np.poly1d(l1)
-    l2 = [ 0.84934688 -0.82402032 -0.30158281  0.75062812]
+    l2 = [ 0.84934688, -0.82402032, -0.30158281,  0.75062812]
     x2 = np.poly1d(l2)
-    l3 = [ 0.26187251 -0.21280877  0.15913015  0.62090305]
+    l3 = [ 0.26187251, -0.21280877,  0.15913015,  0.62090305]
     x3 = np.poly1d(l3)
     x4 = 0.72
     x5 = 1.49
@@ -101,7 +101,7 @@ def plasmaProfile(ne1, L1, ne2, Lx, laser_fwhm, print_flag= False, plot_flag = F
 
 ## dopant profile with leak correction 
 
-def dopantProfile(C_N2,ne1,ne2,xr,ner):
+def dopantProfile(C_N2,ne1,ne2,xr,ner,print_flag= False, plot_flag = False):
     """ return the longitudinale profile of dopant taking into account the
     a rough correction for the leak depending on the ratio of ne2/ne1
     return a numpy array (x,nN2) [m,cm^-3]
@@ -121,7 +121,7 @@ def dopantProfile(C_N2,ne1,ne2,xr,ner):
     nN2[6:] = ner[6:]*C_N2* pcorrection1(r)
 
     # diffusion correction 
-    nN2[-2] = ner[-2]]*C_N2* pcorrection1(r)*pcorrection2(r)
+    nN2[-2] = ner[-2]*C_N2* pcorrection1(r)*pcorrection2(r)
 
     if plot_flag == True:
         fig, ax = plt.subplots()
@@ -237,7 +237,7 @@ pp = plasmaProfile(config_external['n_e_1'],config_external['l_1'],config_extern
 
 h_level     = 1.-dopant_level
 xh_points = pp[0,:]/onel
-xh_values = pp[1,:]/ncrit
+xh_values = h_level*pp[1,:]/ncrit
 
 # longitudinal definition of the dopant profile 
 
