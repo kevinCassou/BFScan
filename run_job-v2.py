@@ -46,19 +46,19 @@ with open(path_input_submission_script, "r") as file:
 ### 1 - Prepare dataframe with scan parameters
 
 n_e_1 = 1.0e24*np.array([3.0,4.0,6.0])
-n_e_2 = 1.0e24*np.array([1.5 , 4])
+r = np.array([0.33, 0.5,0.66])
 l_1 =  1e-3*np.array([0.3, 0.6, 1.2])
 x_foc = np.array([0.0, 0.2, 0.4])
 c_N2 =  1e-2*np.array([0.3, 1, 3])
 
-param_grid = {'n_e_1':n_e_1, 'n_e_2':n_e_2, 'l_1':l_1,'x_foc':x_foc,'c_N2':c_N2 }
+param_grid = {'n_e_1':n_e_1, 'r':r, 'l_1':l_1,'x_foc':x_foc,'c_N2':c_N2 }
 
 df = pd.DataFrame((ParameterGrid(param_grid)))
 
 #add column Config
 df['Config'] = df.index
 #rearrange columns cols = list(df.columns.values)
-df = df[['Config','n_e_1', 'n_e_2', 'l_1', 'x_foc', 'c_N2' ]]
+df = df[['Config','n_e_1', 'r', 'l_1', 'x_foc', 'c_N2' ]]
 
 df['x_foc'] =  df['x_foc'].values + xoffset(df['n_e_1'].values,df['l_1'].values)
 
