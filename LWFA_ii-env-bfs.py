@@ -11,7 +11,7 @@ from math import log
 ## plasma profile
 
 
-def plasmaProfile(ne1, L1, r, Lx, laser_fwhm, lambda_0 print_flag= False):
+def plasmaProfile(ne1, L1, r, Lx, laser_fwhm, lambda_0, print_flag= False):
     """
     return the longitudinal plasma profile of a chair-like target 
     ne1 = first plateau electron density    [m^-3]
@@ -64,10 +64,10 @@ def plasmaProfile(ne1, L1, r, Lx, laser_fwhm, lambda_0 print_flag= False):
     k5 = [-1.00304010e+24,  6.45601489e+22,  2.95582151e+23,  1.21448900e+23]
     y5 = r*ne1 + poly1d(k5)
     
-    xr = np.array([x0, xupramp1, xupramp2, xupramp3, xplateau1, xbegindownramp1,
+    xr = array([x0, xupramp1, xupramp2, xupramp3, xplateau1, xbegindownramp1,
                 x1(r), x2(r), x3(r), x4, x5, xend])
     
-    ner = np.array([0,0,ne_up1,ne_up2,ne1,ne1,
+    ner = array([0,0,ne_up1,ne_up2,ne1,ne1,
                     y1(r), y2(r), y3(r), y4(r), y5(r), 0])
     
     if print_flag == True:
@@ -107,7 +107,7 @@ def dopantProfile(C_N2,ne1,r,xr,ner,print_flag= False):
         nN2,
         "\n ###########################################################")
 
-    return xN2,nN2))
+    return xN2,nN2
 
 ## vacuum focus offset as a factor of Zr 
 
