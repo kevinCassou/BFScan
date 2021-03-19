@@ -24,17 +24,17 @@ def xoffset(ne1,L1):
 ### 0 - Define path and executables
 
 # The input namelist - Remember, this namelist must NOT contain the parameters clrw and tasks_on_projection in Main block
-name_input_namelist = "LWFA_ii-env-bfs.py"
+name_input_namelist = "LWFA_ii-env-bfs-2.py"
 name_submission_script = "runSmilei_ii-env-bfs.sh"
 #name_input_namelist = "tst3d_laser_wakefield.py"
 
 # necessary paths - they must be absolute paths
 starting_directory = os.getcwd()
-path_input_namelist = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/"+name_input_namelist
-path_input_submission_script = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/"+name_submission_script
+path_input_namelist = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST2/"+name_input_namelist
+path_input_submission_script = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST2/"+name_submission_script
 
-path_executable_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/smilei"
-path_executable_test_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST/smilei_test"
+path_executable_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST2/smilei"
+path_executable_test_develop = "/ccc/scratch/cont003/smilei/cassouke/BF-TEST2/smilei_test"
 
 # save content of input namelist
 with open(path_input_namelist, "r") as file:
@@ -45,11 +45,11 @@ with open(path_input_submission_script, "r") as file:
 
 ### 1 - Prepare dataframe with scan parameters
 
-n_e_1 = 1.0e24*np.array([3.0,4.0,6.0])
-r = np.array([0.33, 0.5,0.66])
-l_1 =  1e-3*np.array([0.3, 0.6, 1.2])
-x_foc = np.array([0.0, 0.2, 0.4])
-c_N2 =  1e-2*np.array([0.3, 1, 3])
+n_e_1 = 1.0e24*np.array([3.0,4.0,5.0,6.0])
+r = np.array([0.33, 0.5, 0.66])
+l_1 =  1e-3*np.array([0.3, 0.6, 0.9, 1.2])
+x_foc = np.array([0.0, 0.2, 0.4, 0.6, 0.8])
+c_N2 =  1e-2*np.array([0.3, 1, 3, 5, 10])
 
 param_grid = {'n_e_1':n_e_1, 'r':r, 'l_1':l_1,'x_foc':x_foc,'c_N2':c_N2 }
 
