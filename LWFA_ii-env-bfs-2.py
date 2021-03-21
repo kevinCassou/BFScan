@@ -50,7 +50,7 @@ def plasmaProfile(ne1, L1, r, Lx, laser_fwhm, lambda_0, print_flag= False):
     l3 = [ 0.26187251, -0.21280877,  0.15913015,  0.62090305]
     x3 = poly1d(l3)*mm2m + xbegindownramp1 
     x4 = 0.72*mm2m + xbegindownramp1 
-    x5 = 2.5*mm2m + xbegindownramp1 
+    x5 = 2.7*mm2m + xbegindownramp1 
     # xend = x5 + ldownramp2
     
     k1 = [-2.94467180e+24,  9.97007699e+23,  1.26329259e+24,  5.71857555e+22]

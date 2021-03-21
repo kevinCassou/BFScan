@@ -8,7 +8,7 @@
 ### loading module
 from __future__ import (division, print_function, absolute_import,unicode_literals)
 import os,sys
-import numpy as np
+from numpy poly1d,array,pi 
 import scipy.constants as sc
 import matplotlib.pyplot as plt
 

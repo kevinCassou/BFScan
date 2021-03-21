@@ -13,4 +13,4 @@ export OMP_NUM_THREADS=24
 export OMP_SCHEDULE=dynamic
 export OMP_PROC_BIND=true
 
-ccc_mprun ./smilei namelist.py 
+ccc_mprun ./smilei LWFA_ii-env-bfs-2.py 
